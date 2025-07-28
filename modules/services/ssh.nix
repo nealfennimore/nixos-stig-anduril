@@ -38,4 +38,18 @@
 
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268088
   services.openssh.logLevel = "VERBOSE";
+
+  # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268137
+  services.openssh.permitRootLogin = "no";
+
+  services.openssh.extraConfig = [
+    # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268142
+    ''
+      ClientAliveInterval 600
+    ''
+    # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268143
+    ''
+      ClientAliveCountMax 1
+    ''
+  ];
 }

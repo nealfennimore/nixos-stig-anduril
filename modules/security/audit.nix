@@ -41,6 +41,40 @@
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268100
     "-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=unset -k perm_mod"
     "-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=unset -k perm_mod"
+
+    # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268119
+    "--loginuid-immutable"
+
+    # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268148
+    "-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -k execpriv"
+    "-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -k execpriv"
+    "-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -k execpriv"
+    "-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -k execpriv"
+
+    # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268163
+    "-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=-1 -k perm_mod"
+    "-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -k perm_mod"
+    "-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=-1 -k perm_mod"
+    "-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -k perm_mod"
+
+    # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268164
+    "-a always,exit -F path=/run/current-system/sw/bin/usermod -F perm=x -F auid>=1000 -F auid!=unset -k privileged-usermod"
+
+    # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268165
+    "-a always,exit -F path=/run/current-system/sw/bin/chage -F perm=x -F auid>=1000 -F auid!=unset -k privileged-chage"
+    "-a always,exit -F path=/run/current-system/sw/bin/chcon -F perm=x -F auid>=1000 -F auid!=unset -k perm_mod"
+
+    # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268166
+    "-w /var/log/lastlog -p wa -k logins"
+
+    # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268167
+    "-w /etc/sudoers -p wa -k identity"
+    "-w /etc/passwd -p wa -k identity"
+    "-w /etc/shadow -p wa -k identity"
+    "-w /etc/gshadow -p wa -k identity"
+    "-w /etc/group -p wa -k identity"
+    "-w /etc/security/opasswd -p wa -k identity"
+
   ];
 
   environment.etc."audit/auditd.conf".text = [

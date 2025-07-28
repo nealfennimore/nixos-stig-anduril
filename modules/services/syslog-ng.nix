@@ -32,5 +32,31 @@
       };
 
       log { source(s_local); destination(d_local); destination(d_network); };
-    '';
+    ''
+    # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268115
+    ++ ''
+      options {
+        owner(root);
+        dir_owner(root);
+      };
+    ''
+    # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268116
+    ++ ''
+      options {
+        group(root);
+        dir_group(root);
+      };
+    ''
+    # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268117
+    ++ ''
+      options {
+        dir_perm(0750);
+      };
+    ''
+    # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268118
+    ++ ''
+      options {
+        perm(0640);
+      };
+    ''
 }
