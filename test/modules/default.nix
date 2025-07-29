@@ -12,6 +12,7 @@
     ./services/usbguard.nix
     ./services/sssd.nix
     ./services/syslog-ng.nix
+    ./services/ldap.nix
   ];
 
   # Bootloader.

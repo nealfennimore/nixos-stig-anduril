@@ -1,10 +1,20 @@
 { ... }:
 {
-  # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268178
   services.sssd.config = ''
     [sssd]
     config_file_version = 2
     services = pam
-    domains = shadowutils
+    domains = example.com
+
+    [domain/example.com]
+    id_provider = ldap
+    auth_provider = ldap
+
+    ldap_uri = ldap://localhost
+    ldap_search_base = DC=example,DC=com
+
+    debug_level = 9
+    enumerate = false
+    cache_credentials = true
   '';
 }
