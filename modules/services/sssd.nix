@@ -7,7 +7,7 @@
     let
       certzip = pkgs.fetchzip {
         url = "https://dl.dod.cyber.mil/wp-content/uploads/pki-pke/zip/unclass-certificates_pkcs7_v5-6_dod.zip";
-        sha256 = "sha256-iwwJRXCnONk/LFddQlwy8KX9e9kVXW/QWDnX5qZFZjc=";
+        sha256 = "sha256-iwwJRXCnONk/LFddQlwy8KX9e9kVXW/QWDnX5qZFZJc=";
       };
     in
     "${certzip}/DOD_PKE_CA_chain.pem";

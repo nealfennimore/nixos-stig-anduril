@@ -1,4 +1,4 @@
-{ ... }:
+{ lib, ... }:
 {
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268080
   security.auditd.enable = true;
@@ -6,10 +6,12 @@
 
   security.audit.rules = [
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268091
+    # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268148
+    # Duplicate rules ^
     "-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -k execpriv"
     "-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -k execpriv"
-    "-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -k execpriv "
-    "-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -k execpriv "
+    "-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -k execpriv"
+    "-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -k execpriv"
 
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268094
     "-a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=unset -k privileged-mount"
@@ -45,12 +47,6 @@
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268119
     "--loginuid-immutable"
 
-    # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268148
-    "-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -k execpriv"
-    "-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -k execpriv"
-    "-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -k execpriv"
-    "-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -k execpriv"
-
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268163
     "-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=-1 -k perm_mod"
     "-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -k perm_mod"
@@ -77,7 +73,7 @@
 
   ];
 
-  environment.etc."audit/auditd.conf".text = [
+  environment.etc."audit/auditd.conf".text = lib.strings.concatLines [
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268101
     ''
       space_left_action = syslog

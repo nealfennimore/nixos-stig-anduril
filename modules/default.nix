@@ -1,0 +1,30 @@
+{ ... }:
+{
+  imports = [
+    ./boot/kernel.nix
+    ./environment/account.nix
+    ./environment/aide.nix
+    ./environment/login.nix
+    ./environment/packages.nix
+    ./hardware/bluetooth.nix
+    ./networking/firewall.nix
+    ./networking/timeservers.nix
+    ./networking/wireless.nix
+    ./nix/settings.nix
+    ./nix/overlays.nix
+    ./programs/dconf.nix
+    ./security/apparmor.nix
+    ./security/audit.nix
+    ./security/pam.nix
+    ./security/pwquality.nix
+    ./security/sudo.nix
+    ./services/cron.nix
+    ./services/displaymanager.nix
+    ./services/getty.nix
+    ./services/ssh.nix
+    ./services/sssd.nix
+    ./services/syslog-ng.nix
+    ./services/timesyncd.nix
+    ./services/usbguard.nix
+  ];
+}

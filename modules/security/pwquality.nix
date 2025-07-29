@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
 
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268170
@@ -12,7 +12,7 @@
     pkgs.lib.mkBefore "password requisite ${pkgs.libpwquality.lib}/lib/security/pam_pwquality.so"
   );
 
-  environment.etc."/security/pwquality.conf".text = [
+  environment.etc."/security/pwquality.conf".text = lib.strings.concatLines [
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268126
     ''
       ucredit=-1

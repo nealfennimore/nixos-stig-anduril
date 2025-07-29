@@ -5,20 +5,20 @@
   services.openssh.enable = true;
 
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268089
-  services.openssh.setting.Ciphers = [
+  services.openssh.settings.Ciphers = [
     "aes256-ctr"
     "aes192-ctr"
     "aes128-ctr"
   ];
 
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268157
-  services.openssh.macs = [
+  services.openssh.settings.Macs = [
     "hmac-sha2-512"
     "hmac-sha2-256"
   ];
 
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268176
-  openssh.settings.UsePAM = "yes";
+  services.openssh.settings.UsePAM = true;
 
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268083
   services.openssh.banner = lib.mkDefault ''
@@ -37,12 +37,12 @@
   '';
 
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268088
-  services.openssh.logLevel = "VERBOSE";
+  services.openssh.settings.LogLevel = "VERBOSE";
 
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268137
-  services.openssh.permitRootLogin = "no";
+  services.openssh.settings.PermitRootLogin = "no";
 
-  services.openssh.extraConfig = [
+  services.openssh.extraConfig = lib.strings.concatLines [
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268142
     ''
       ClientAliveInterval 600
