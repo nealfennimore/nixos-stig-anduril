@@ -9,6 +9,7 @@
 {
   imports = [
     ./users.nix
+    ./packages.nix
     ./services/usbguard.nix
     ./services/sssd.nix
     ./services/syslog-ng.nix

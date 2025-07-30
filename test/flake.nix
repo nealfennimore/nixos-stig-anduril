@@ -195,6 +195,24 @@
             # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268134
             machine.succeed("[[ $(grep -Eo 'minlen=[0-9]+' /etc/security/pwquality.conf | awk -F= '{print $2}) -ge 15 ]]")
 
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268135
+            machine.succeed("awk -F ':' 'list[$3]++{print $1, $3}' /etc/passwd")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268136
+            machine.succeed("grep -q opencryptoki /tmp/current-system")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268137
+            machine.succeed("grep -q 'PermitRootLogin no' /etc/ssh/sshd_config")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268138
+            machine.fail("[[ 'L' == $(passwd -S root | awk '{print $2}') ]]")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268139
+            machine.succeed("[[ $(systemctl is-active usbguard.service) == 'active' ]] && [[ $(systemctl is-enabled usbguard.service) == 'enabled' ]]")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268140
+            # machine.succeed("find / -type d \( -perm -0002 -a ! -perm -1000 \) -print 2>/dev/null")
+
 
           '';
         };
