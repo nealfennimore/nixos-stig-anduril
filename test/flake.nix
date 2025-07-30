@@ -169,13 +169,13 @@
             machine.succeed("openssl x509 -text -in /etc/sssd/pki/sssd_auth_ca_db.pem | grep -qe 'CN=DoD Root CA 3'")
 
             # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268126
-            machine.succeed("grep -q 'ucredit=-[0-9]{1}' /etc/security/pwquality.conf")
+            machine.succeed("grep -qE 'ucredit=-[0-9]{1}' /etc/security/pwquality.conf")
 
             # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268127
-            machine.succeed("grep -q 'lcredit=-[0-9]{1}' /etc/security/pwquality.conf")
+            machine.succeed("grep -qE 'lcredit=-[0-9]{1}' /etc/security/pwquality.conf")
 
             # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268128
-            machine.succeed("grep -q 'dcredit=-[0-9]{1}' /etc/security/pwquality.conf")
+            machine.succeed("grep -qE 'dcredit=-[0-9]{1}' /etc/security/pwquality.conf")
 
             # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268129
             machine.succeed("[[ $(grep -Eo 'difok=[0-9]{1}' /etc/security/pwquality.conf | awk -F= '{print $2}) -ge 8 ]]")
@@ -212,6 +212,40 @@
 
             # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268140
             # machine.succeed("find / -type d \( -perm -0002 -a ! -perm -1000 \) -print 2>/dev/null")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268141
+            machine.succeed("sysctl net.ipv4.tcp_syncookies | grep -q 'net.ipv4.tcp_syncookies = 1'")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268142
+            machine.succeed("[[ $(grep -io 'ClientAliveInterval' /etc/ssh/sshd_config | awk '{print $2}) -ge 600 ]]")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268143
+            machine.succeed("grep -q 'ClientAliveCountMax 1' /etc/ssh/sshd_config ")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268144
+            # NOTE: No configured encrypted drive
+            machine.fail("blkid | grep -q crypto_LUKS")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268145
+            machine.succeed("grep -qE 'ocredit=-[0-9]{1}' /etc/security/pwquality.conf")
+
+            # TODO: https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268146
+            # TODO: https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268147
+
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268148
+            # FIXME: params order
+            machine.fail("auditctl -l | grep -qe '-a always,exit -F arch=b32 -S execve -C uid!=euid -F euid=0 -k execpriv'")
+            # FIXME: params order
+            machine.fail("auditctl -l | grep -qe '-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -k execpriv'")
+            # FIXME: params order
+            machine.fail("auditctl -l | grep -qe '-a always,exit -F arch=b32 -S execve -C gid!=egid -F egid=0 -k execpriv'")
+            # FIXME: params order
+            machine.fail("auditctl -l | grep -qe '-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -k execpriv'")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268149
+            machine.succeed("timedatectl show-timesync | grep -q 'usnogps.navy.mil'")
+
 
 
           '';
