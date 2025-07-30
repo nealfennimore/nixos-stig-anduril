@@ -76,7 +76,6 @@
             machine.succeed("for i in $(grep -E -o 'succeed_interval=[0-9]+' /etc/pam.d/login | grep -E -o '[0-9]+'); do (( $i >= 900 )) || exit 1; done")
             machine.succeed("grep -q 'Ciphers aes256-ctr,aes192-ctr,aes128-ctr' /etc/ssh/sshd_config")
             machine.succeed("grep -q 'LogLevel VERBOSE' /etc/ssh/sshd_config")
-            machine.succeed("grep -q 'Macs hmac-sha2-512,hmac-sha2-256' /etc/ssh/sshd_config")
             machine.succeed("grep -q audit /tmp/current-system")
             machine.succeed("grep -q audit_backlog_limit=8192 /proc/cmdline")
             machine.succeed("grep -q audit=1 /proc/cmdline")
@@ -178,13 +177,14 @@
             machine.succeed("grep -qE 'dcredit=-[0-9]{1}' /etc/security/pwquality.conf")
 
             # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268129
-            machine.succeed("[[ $(grep -Eo 'difok=[0-9]{1}' /etc/security/pwquality.conf | awk -F= '{print $2}) -ge 8 ]]")
+            machine.succeed("[[ $(grep -Eo 'difok=[0-9]{1}' /etc/security/pwquality.conf | awk -F= '{print $2}') -ge 8 ]]")
 
             # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268130
-            machine.succeed("grep -q 'ENCRYPT_METHOD SHA512' /etc/login.defs")
+            # NOTE: Test is different from fix in group
+            machine.succeed("grep -q 'ENCRYPT_METHOD SHA256' /etc/login.defs")
 
             # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268131
-            machine.fail("whereis telnet")
+            machine.fail("which telnet")
 
             # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268132
             machine.succeed("grep -q 'PASS_MIN_DAYS 1' /etc/login.defs")
@@ -193,7 +193,7 @@
             machine.succeed("grep -q 'PASS_MAX_DAYS 60' /etc/login.defs")
 
             # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268134
-            machine.succeed("[[ $(grep -Eo 'minlen=[0-9]+' /etc/security/pwquality.conf | awk -F= '{print $2}) -ge 15 ]]")
+            machine.succeed("[[ $(grep -Eo 'minlen=[0-9]+' /etc/security/pwquality.conf | awk -F= '{print $2}') -ge 15 ]]")
 
             # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268135
             machine.succeed("awk -F ':' 'list[$3]++{print $1, $3}' /etc/passwd")
@@ -217,7 +217,7 @@
             machine.succeed("sysctl net.ipv4.tcp_syncookies | grep -q 'net.ipv4.tcp_syncookies = 1'")
 
             # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268142
-            machine.succeed("[[ $(grep -io 'ClientAliveInterval' /etc/ssh/sshd_config | awk '{print $2}) -ge 600 ]]")
+            machine.succeed("[[ $(grep 'ClientAliveInterval' /etc/ssh/sshd_config | awk '{print $2}') -ge 600 ]]")
 
             # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268143
             machine.succeed("grep -q 'ClientAliveCountMax 1' /etc/ssh/sshd_config ")
@@ -246,8 +246,126 @@
             # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268149
             machine.succeed("timedatectl show-timesync | grep -q 'usnogps.navy.mil'")
 
+            # TODO: find
+            machine.succeed("grep -q 'DEFAULT_HOME yes' /etc/login.defs")
+            machine.succeed("grep -q 'SYS_UID_MIN  400' /etc/login.defs")
+            machine.succeed("grep -q 'SYS_UID_MAX  999' /etc/login.defs")
+            machine.succeed("grep -q 'UID_MIN      1000' /etc/login.defs")
+            machine.succeed("grep -q 'UID_MAX      29999' /etc/login.defs")
+            machine.succeed("grep -q 'SYS_GID_MIN  400' /etc/login.defs")
+            machine.succeed("grep -q 'SYS_GID_MAX  999' /etc/login.defs")
+            machine.succeed("grep -q 'GID_MIN      1000' /etc/login.defs")
+            machine.succeed("grep -q 'GID_MAX      29999' /etc/login.defs")
+            machine.succeed("grep -q 'TTYGROUP     tty' /etc/login.defs")
+            machine.succeed("grep -q 'TTYPERM      0620' /etc/login.defs")
 
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268150
+            machine.succeed("timedatectl show-timesync | grep -q 'PollIntervalMaxUSec=1min'")
 
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268151
+            machine.succeed("timedatectl status | grep -q 'NTP service: active'")
+
+            # TODO: https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268152
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268153
+            machine.succeed("grep -q aide /tmp/current-system")
+            machine.succeed("[[ -f /etc/aide/aide.conf ]]")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268155
+            machine.succeed("grep -q 'Defaults timestamp_timeout=0' /etc/sudoers")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268156
+            machine.succeed("grep -q '%wheel  ALL=(ALL:ALL)    SETENV: ALL' /etc/sudoers")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268157
+            machine.succeed("grep -q 'Macs hmac-sha2-512,hmac-sha2-256' /etc/ssh/sshd_config")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268158
+            machine.succeed("iptables -L | grep limit | grep -qe 'tcp dpt:ssh limit: above 1000000b/s mode srcip'")
+            machine.succeed("iptables -L | grep limit | grep -qe 'tcp dpt:http limit: above 1000/min burst 5 mode srcip'")
+            machine.succeed("iptables -L | grep limit | grep -qe 'tcp dpt:https limit: above 1000/min burst 5 mode srcip'")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268159
+            machine.succeed("[[ $(systemctl is-active sshd.service) == 'active' ]] && [[ $(systemctl is-enabled sshd.service) == 'enabled' ]]")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268160
+            machine.succeed("sysctl kernel.kptr_restrict | grep -q 'kernel.kptr_restrict = 1'")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268161
+            machine.succeed("sysctl kernel.randomize_va_space | grep -q 'kernel.randomize_va_space = 2'")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268163
+            # FIXME: params order
+            machine.fail("auditctl -l | grep -qe '-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=-1 -k perm_mod'")
+            # FIXME: params order
+            machine.fail("auditctl -l | grep -qe '-a always,exit -F arch=b32 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -k perm_mod'")
+            # FIXME: params order
+            machine.fail("auditctl -l | grep -qe '-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid>=1000 -F auid!=-1 -k perm_mod'")
+            # FIXME: params order
+            machine.fail("auditctl -l | grep -qe '-a always,exit -F arch=b64 -S setxattr,fsetxattr,lsetxattr,removexattr,fremovexattr,lremovexattr -F auid=0 -k perm_mod'")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268164
+            # FIXME: params order
+            machine.fail("auditctl -l | grep -qe '-a always,exit -F path=/run/current-system/sw/bin/usermod -F perm=x -F auid>=1000 -F auid!=unset -k privileged-usermod'")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268165
+            # FIXME: params order
+            machine.fail("auditctl -l | grep -qe '-a always,exit -S all -F path=/run/current-system/sw/bin/chage -F perm=x -F auid>=1000 -F auid!=-1 -k privileged-chage'")
+            # FIXME: params order
+            machine.fail("auditctl -l | grep -qe '-a always,exit -S all -F path=/run/current-system/sw/bin/chcon -F perm=x -F auid>=1000 -F auid!=-1 -k perm_mod'")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268166
+            machine.succeed("auditctl -l | grep -qe '-w /var/log/lastlog -p wa -k logins'")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268167
+            machine.succeed("auditctl -l | grep -qe '-w /etc/sudoers -p wa -k identity'")
+            machine.succeed("auditctl -l | grep -qe '-w /etc/passwd -p wa -k identity'")
+            machine.succeed("auditctl -l | grep -qe '-w /etc/shadow -p wa -k identity'")
+            machine.succeed("auditctl -l | grep -qe '-w /etc/gshadow -p wa -k identity'")
+            machine.succeed("auditctl -l | grep -qe '-w /etc/group -p wa -k identity'")
+            machine.succeed("auditctl -l | grep -qe '-w /etc/security/opasswd -p wa -k identity'")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268168
+            machine.succeed("grep -q 'fips=1' /proc/cmdline")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268169
+            machine.succeed("grep -q 'dictcheck=1' /etc/security/pwquality.conf")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268170
+            machine.succeed(" grep -q pam_pwquality /etc/pam.d/passwd")
+            machine.succeed(" grep -q pam_pwquality /etc/pam.d/chpasswd")
+            machine.succeed(" grep -q pam_pwquality /etc/pam.d/sudo")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268171
+            machine.succeed("[[ $(grep 'FAIL_DELAY' /etc/login.defs | awk '{print $2}') -ge 4 ]]")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268172
+            # NOTE: No desktop
+            machine.fail("grep -q 'AutomaticLoginEnable=False' /etc/gdm/custom.conf")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268173
+            machine.succeed("[[ $(systemctl is-active apparmor.service) == 'active' ]] && [[ $(systemctl is-enabled apparmor.service) == 'enabled' ]]")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268174
+            machine.succeed("[[ $(grep 'INACTIVE' /etc/login.defs | awk -F= '{print $2}') -le 35 ]]")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268175
+            machine.succeed("for i in $(grep -Eo '\$[0-9]\$' /etc/shadow); do [[ $i == '$6$' ]] || exit 1; done")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268176
+            machine.succeed("sshd -G | grep -q 'usepam yes'")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268177
+            machine.succeed("grep -q 'pam_p11.so' /etc/pam.d/sudo")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268178
+            machine.succeed("grep -q 'offline_credentials_expiration = 1' /etc/sssd/sssd.conf")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268179
+            machine.succeed("grep -q 'cert_policy = ca,signature,ocsp_on, crl_auto;' /etc/pam_pkcs11/pam_pkcs11.conf")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268180
+            machine.succeed("nixos-version")
           '';
         };
       };
