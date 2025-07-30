@@ -75,39 +75,25 @@
 
   environment.etc."audit/auditd.conf".text = lib.strings.concatLines [
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268101
-    ''
-      space_left_action = syslog
-    ''
+    "space_left_action = syslog"
 
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268102
-    ''
-      admin_space_left_action = syslog
-    ''
+    "admin_space_left_action = syslog"
 
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268103
-    ''
-      space_left = 25%
-    ''
+    "space_left = 25%"
 
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268104
-    ''
-      admin_space_left = 10%
-    ''
+    "admin_space_left = 10%"
 
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268105
-    ''
-      disk_full_action = HALT
-    ''
+    "disk_full_action = HALT"
 
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268106
-    ''
-      disk_error_action = HALT
-    ''
+    "disk_error_action = HALT"
 
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268110
-    ''
-      log_group = root
-    ''
+    "log_group = root"
   ];
 
 }

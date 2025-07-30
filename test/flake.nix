@@ -67,6 +67,7 @@
             machine.succeed("auditctl -l | grep -qe '-a always,exit -F arch=b64 -S execve -C gid!=egid -F egid=0 -F key=execpriv'")
             machine.succeed("auditctl -l | grep -qe '-a always,exit -F arch=b64 -S execve -C uid!=euid -F euid=0 -F key=execpriv'")
             machine.succeed("auditctl -l | grep -qe '-a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=-1 -F key=privileged-mount'")
+
             machine.succeed("auditctl -l | grep -qw cron")
             machine.succeed("echo -e 'Pass@1\nPass@1' | passwd 2>&1 | grep -q 'BAD PASSWORD'")
             machine.succeed("echo -e 'pass\npass' | passwd 2>&1 | grep -q 'BAD PASSWORD'")
@@ -81,6 +82,120 @@
             machine.succeed("grep -q audit=1 /proc/cmdline")
             machine.succeed("grep -q USG $(grep Banner /etc/ssh/sshd_config | awk '{print $2}')")
             machine.succeed("nix-store --query --requisites /run/current-system | cut -d- -f2- | sort | uniq | grep vlock")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268100
+            # FIXME: params order
+            machine.fail("auditctl -l | grep -qe '-a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=unset -F key=perm_mod'")
+            # FIXME: params order
+            machine.fail("auditctl -l | grep -qe '-a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=unset -F key=perm_mod'")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268101
+            machine.succeed("grep -q 'space_left_action = syslog' /etc/audit/auditd.conf")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268102
+            machine.succeed("grep -q 'admin_space_left_action = syslog' /etc/audit/auditd.conf")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268103
+            machine.succeed("grep -q 'space_left = 25%' /etc/audit/auditd.conf")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268104
+            machine.succeed("grep -q 'admin_space_left = 10%' /etc/audit/auditd.conf")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268105
+            machine.succeed("grep -q 'disk_full_action = HALT' /etc/audit/auditd.conf")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268106
+            machine.succeed("grep -q 'disk_error_action = HALT' /etc/audit/auditd.conf")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268107
+            machine.succeed("[[ $(systemctl is-active syslog-ng.service) == 'active' ]] && [[ $(systemctl is-enabled syslog-ng.service) == 'enabled' ]]")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268108
+            machine.succeed("grep -q log $(grep -E -o '([[:alnum:]]|/)+-syslog-ng\.conf' /etc/systemd/system/syslog-ng.service)")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268109
+            # NOTE: Failing as LDAP is run unencrypted locally
+            machine.fail("grep -q 'transport(tls)' $(grep -E -o '([[:alnum:]]|/)+-syslog-ng\.conf' /etc/systemd/system/syslog-ng.service)")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268110
+            machine.succeed("grep -q 'log_group = root' /etc/audit/auditd.conf")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268111
+            machine.succeed("[[ -f /var/log/audit/audit.log ]]")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268111
+            machine.succeed("for i in $(find /var/log/audit -exec stat -c '%U' {} \;); do [[ $i == 'root' ]] || exit 1; done")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268112
+            machine.succeed("for i in $(find /var/log/audit -exec stat -c '%G' {} \;); do [[ $i == 'root' ]] || exit 1; done")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268113
+            machine.succeed("for i in $(find /var/log/audit -type d -exec stat -c '%a' {} \;); do [[ $i -eq 700 ]] || exit 1; done")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268114
+            machine.succeed("for i in $(find /var/log/audit -type f -exec stat -c '%a' {} \;); do [[ $i -eq 600 ]] || exit 1; done")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268115
+            machine.succeed("grep -q 'owner(root)' $(grep -E -o '([[:alnum:]]|/)+-syslog-ng\.conf' /etc/systemd/system/syslog-ng.service)")
+            machine.succeed("grep -q 'dir_owner(root)' $(grep -E -o '([[:alnum:]]|/)+-syslog-ng\.conf' /etc/systemd/system/syslog-ng.service)")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268116
+            machine.succeed("grep -q 'group(root)' $(grep -E -o '([[:alnum:]]|/)+-syslog-ng\.conf' /etc/systemd/system/syslog-ng.service)")
+            machine.succeed("grep -q 'dir_group(root)' $(grep -E -o '([[:alnum:]]|/)+-syslog-ng\.conf' /etc/systemd/system/syslog-ng.service)")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268117
+            machine.succeed("grep -q 'dir_perm(0750)' $(grep -E -o '([[:alnum:]]|/)+-syslog-ng\.conf' /etc/systemd/system/syslog-ng.service)")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268118
+            machine.succeed("grep -q 'perm(0640)' $(grep -E -o '([[:alnum:]]|/)+-syslog-ng\.conf' /etc/systemd/system/syslog-ng.service)")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268119
+            machine.succeed("auditctl -s | grep -qe 'loginuid_immutable 1 locked'")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268120
+            # NOTE: there's no files here in the VM
+            machine.succeed("for i in $(find /etc/nixos -type f -exec stat -c '%a' {} \;); do [[ $i -eq 644 ]] || exit 1; done")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268121
+            machine.succeed("for i in $(find /etc/nixos -type d -exec stat -c '%a' {} \;); do [[ $i -eq 755 ]] || exit 1; done")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268122
+            machine.succeed("for i in $(find /etc/nixos -exec stat -c '%U' {} \;); do [[ $i == 'root' ]] || exit 1; done")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268123
+            machine.succeed("for i in $(find /etc/nixos -exec stat -c '%G' {} \;); do [[ $i == 'root' ]] || exit 1; done")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268124
+            machine.succeed("openssl x509 -text -in /etc/sssd/pki/sssd_auth_ca_db.pem | grep -qe 'CN=DoD Root CA 3'")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268126
+            machine.succeed("grep -q 'ucredit=-[0-9]{1}' /etc/security/pwquality.conf")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268127
+            machine.succeed("grep -q 'lcredit=-[0-9]{1}' /etc/security/pwquality.conf")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268128
+            machine.succeed("grep -q 'dcredit=-[0-9]{1}' /etc/security/pwquality.conf")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268129
+            machine.succeed("[[ $(grep -Eo 'difok=[0-9]{1}' /etc/security/pwquality.conf | awk -F= '{print $2}) -ge 8 ]]")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268130
+            machine.succeed("grep -q 'ENCRYPT_METHOD SHA512' /etc/login.defs")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268131
+            machine.fail("whereis telnet")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268132
+            machine.succeed("grep -q 'PASS_MIN_DAYS 1' /etc/login.defs")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268133
+            machine.succeed("grep -q 'PASS_MAX_DAYS 60' /etc/login.defs")
+
+            # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268134
+            machine.succeed("[[ $(grep -Eo 'minlen=[0-9]+' /etc/security/pwquality.conf | awk -F= '{print $2}) -ge 15 ]]")
+
+
           '';
         };
       };

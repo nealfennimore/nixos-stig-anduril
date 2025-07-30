@@ -10,7 +10,7 @@
         sha256 = "sha256-iwwJRXCnONk/LFddQlwy8KX9e9kVXW/QWDnX5qZFZJc=";
       };
     in
-    "${certzip}/DOD_PKE_CA_chain.pem";
+    "${certzip}/DoD_PKE_CA_chain.pem";
 
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268178
   services.sssd.config = ''
