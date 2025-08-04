@@ -8,7 +8,7 @@ pushd test
 
 nix build .#nixosConfigurations.base.config.formats.vm
 
-export QEMU_OPTS="-device usb-host,vendorid=0x04e6,productid=0x581d"
+export QEMU_OPTS="-device usb-host,vendorid=0x04e6,productid=0x581d -net user,hostfwd=tcp::2222-:22"
 
 ./result/run-nixos-vm
 
