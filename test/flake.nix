@@ -56,7 +56,7 @@
               machine.succeed("echo -e 'Pass\nPass' | passwd 2>&1 | grep -q 'BAD PASSWORD'")
               machine.succeed("echo -e 'Pass1\nPass1' | passwd 2>&1 | grep -q 'BAD PASSWORD'")
             ''
-            + lib.strings.concatMapStringsSep "" (
+            + lib.strings.concatMapStringsSep "\n" (
               f: builtins.replaceStrings [ "''" "\n  " ] [ "" "" ] (lib.strings.fileContents f)
             ) (lib.fileset.toList ./tests);
 
