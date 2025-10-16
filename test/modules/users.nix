@@ -1,7 +1,11 @@
 { ... }:
 {
 
-  users.users.root.password = "password";
+  users.users.root = {
+    enable = false;
+    hashedPassword = null;
+    hashedPasswordFile = null;
+  };
   users.groups.neal = { };
   users.users.neal = {
     isNormalUser = true;
