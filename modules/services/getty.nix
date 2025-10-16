@@ -1,8 +1,6 @@
 { lib, ... }:
-{
-
-  # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268082
-  services.getty.helpLine = lib.mkDefault ''
+let
+  text = ''
     You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.
 
     By using this IS (which includes any device attached to this IS), you consent to the following conditions:
@@ -16,5 +14,11 @@
 
     -Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or monitoring of the content of privileged communications, or work product, related to personal representation or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and confidential. See User Agreement for details.
   '';
+in
+{
+
+  # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268082
+  services.getty.helpLine = lib.mkDefault text;
+  services.getty.greetingLine = lib.mkForce text; # NOTE: helpLine is in the grouping, but it looks like it should be greetingLine
 
 }
