@@ -2,14 +2,14 @@
 {
 
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268170
-  security.pam.services.passwd.text = pkgs.lib.mkDefault (
-    pkgs.lib.mkBefore "password requisite ${pkgs.libpwquality.lib}/lib/security/pam_pwquality.so"
+  security.pam.services.passwd.text = lib.mkDefault (
+    lib.mkBefore "password requisite ${pkgs.libpwquality.lib}/lib/security/pam_pwquality.so"
   );
-  security.pam.services.chpasswd.text = pkgs.lib.mkDefault (
-    pkgs.lib.mkBefore "password requisite ${pkgs.libpwquality.lib}/lib/security/pam_pwquality.so"
+  security.pam.services.chpasswd.text = lib.mkDefault (
+    lib.mkBefore "password requisite ${pkgs.libpwquality.lib}/lib/security/pam_pwquality.so"
   );
-  security.pam.services.sudo.text = pkgs.lib.mkDefault (
-    pkgs.lib.mkBefore "password requisite ${pkgs.libpwquality.lib}/lib/security/pam_pwquality.so"
+  security.pam.services.sudo.text = lib.mkDefault (
+    lib.mkBefore "password requisite ${pkgs.libpwquality.lib}/lib/security/pam_pwquality.so"
   );
 
   environment.etc."/security/pwquality.conf".text = lib.strings.concatLines [
