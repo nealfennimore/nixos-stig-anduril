@@ -14,6 +14,7 @@
     ./services/sssd.nix
     ./services/syslog-ng.nix
     ./services/ldap.nix
+    ./services/displaymanager.nix
   ];
 
   # Bootloader.
