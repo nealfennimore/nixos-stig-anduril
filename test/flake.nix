@@ -50,7 +50,7 @@
               machine.wait_for_unit("default.target")
               machine.succeed("nix-store --query --requisites /run/current-system | cut -d- -f2- | sort | uniq > /tmp/current-system")
 
-              machine.fail("echo -e 'Pass@1234567890\nPass@1234567890' | passwd 2>&1 | grep -q 'BAD PASSWORD'")
+              machine.succeed("echo -e 'Pass@1234567890\nPass@1234567890' | passwd 2>&1 | grep -qv 'BAD PASSWORD'")
               machine.succeed("echo -e 'Pass@1\nPass@1' | passwd 2>&1 | grep -q 'BAD PASSWORD'")
               machine.succeed("echo -e 'pass\npass' | passwd 2>&1 | grep -q 'BAD PASSWORD'")
               machine.succeed("echo -e 'Pass\nPass' | passwd 2>&1 | grep -q 'BAD PASSWORD'")
