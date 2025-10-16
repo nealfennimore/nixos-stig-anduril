@@ -21,8 +21,8 @@
   security.pam.p11.enable = true;
 
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268179
-  environment.etc."pam_pkcs11/pam_pkcs11.conf".text = ''
-    cert_policy = ca,signature,ocsp_on, crl_auto;
+  environment.etc."pam_pkcs11/pam_pkcs11.conf".text = lib.mkDefault ''
+    cert_policy = ca,signature,ocsp_on,crl_auto;
   '';
 
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268085
