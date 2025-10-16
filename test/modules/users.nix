@@ -10,7 +10,7 @@
   users.users.neal = {
     isNormalUser = true;
     extraGroups = [ "wheel" ];
-    password = "password";
+    password = "Password@1234";
     openssh.authorizedKeys = {
       keys = [
         "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPty6l+Gtw52pLF6dzVIqKTki8LBaTR4Nu7mGAu3TjtBTDmY1tWTpy6UebaQMiYXsTJ6COtaf9ASp/MvSvHXLQhR//oUI10M648AutAGaSiHU/vzo6p6++NYpixhhHQsA6WI29fC0hJzT2ckS2Ef+b+H16HbvtdTyQeYZZZx2Brtzxa1FGkBdQrYwHdj8K6XQW1y0HZEwI1KnWP72lurFm+uwLUqgMetXhFKa288ZRDMf95WHrz+OvHWlbaiYulOtdozNBceF9FjE38sEMg5qvfvbSunHPPKuVZRw1SEL01Jl0abjVbEVXU1pYkCy/AKjO9oaMi/usBPKOsgZNFueH CAC Email Signature Certificate"
