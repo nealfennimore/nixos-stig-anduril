@@ -10,6 +10,7 @@
   imports = [
     ./users.nix
     ./packages.nix
+    ./security/audit.nix
     ./services/usbguard.nix
     ./services/sssd.nix
     ./services/syslog-ng.nix
