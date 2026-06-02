@@ -16,13 +16,17 @@ in
 {
   # Test-only workaround for loading the audit policy inside the NixOS test VM.
   # The upstream audit-rules-nixos.service cannot load our rules here for two
-  # reasons, neither of which reflects the real target system:
+  # reasons:
   #
-  #   1. audit userspace 4.1.x rejects the AUDIT_SET control ops (-b/-f/-r/-e)
-  #      that the module prepends to its generated rules file, so `auditctl -R`
-  #      aborts on line 2 ("error in line 2") and loads nothing. Audit is
-  #      already enabled and the backlog limit applied via boot.kernelParams,
-  #      so we load only the rule directives.
+  #   1. nixpkgs pins audit 4.1.2, whose auditctl can't set the non-rule config
+  #      arguments (-b/-f/-r/-e) on Linux kernels >= 6.19 (backported into the
+  #      6.18 stable series the VM runs) — the kernel rejects the AUDIT_SET
+  #      netlink request, so `auditctl -R` aborts on line 2 and loads nothing.
+  #      Fixed upstream by audit 4.1.4 (NixOS/nixpkgs#513202, #519542), which is
+  #      not yet in nixos-unstable. Bumping audit via overlay forces a full
+  #      world-rebuild (audit is linked by pam/systemd), so until 4.1.4 lands in
+  #      the channel we instead load only the rule directives here — audit is
+  #      already enabled and the backlog limit applied via boot.kernelParams.
   #   2. The upstream service runs before sysinit.target, but several watch
   #      rules reference paths created at runtime (e.g. /var/cron/tabs). On a
   #      missing path `auditctl -w` fails and aborts the load, so we run late —
