@@ -27,4 +27,7 @@
     ./services/timesyncd.nix
     ./services/usbguard.nix
   ];
+
+  # Pin the state version so nixpkgs bumps don't silently change defaults.
+  system.stateVersion = "26.11";
 }

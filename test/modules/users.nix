@@ -6,6 +6,13 @@
     hashedPassword = null;
     hashedPasswordFile = null;
   };
+
+  # Disabling the root account removes its /etc/passwd entry, so uid 0 has no
+  # resolvable home directory. Nix >= 2.31 errors ("cannot determine user's
+  # home directory") instead of falling back, which breaks the early-boot
+  # register-nix-paths.service (nix-store --load-db) and leaves the store DB
+  # unpopulated. Give the service an explicit HOME so it can register paths.
+  systemd.services.register-nix-paths.environment.HOME = "/root";
   users.groups.neal = { };
   users.users.neal = {
     isNormalUser = true;

@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 {
 
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268159
@@ -21,7 +21,7 @@
   services.openssh.settings.UsePAM = true;
 
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268083
-  services.openssh.banner = lib.mkDefault ''
+  services.openssh.settings.Banner = lib.mkDefault (toString (pkgs.writeText "ssh-banner" ''
     You are accessing a U.S. Government (USG) Information System (IS) that is provided for USG-authorized use only.
 
     By using this IS (which includes any device attached to this IS), you consent to the following conditions:
@@ -34,7 +34,7 @@
     -This IS includes security measures (e.g., authentication and access controls) to protect USG interests--not for your personal benefit or privacy.
 
     -Notwithstanding the above, using this IS does not constitute consent to PM, LE or CI investigative searching or monitoring of the content of privileged communications, or work product, related to personal representation or services by attorneys, psychotherapists, or clergy, and their assistants. Such communications and work product are private and confidential. See User Agreement for details.
-  '';
+  ''));
 
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268088
   services.openssh.settings.LogLevel = "VERBOSE";
