@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ config, lib, ... }:
 {
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268080
   security.auditd.enable = true;
@@ -24,11 +24,15 @@
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268096
     "-a always,exit -F arch=b32 -S init_module,finit_module,delete_module -F auid>=1000 -F auid!=unset -k module_chng"
     "-a always,exit -F arch=b64 -S init_module,finit_module,delete_module -F auid>=1000 -F auid!=unset -k module_chng"
+  ]
+  ++ lib.optionals config.services.cron.enable [
 
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268097
     "-w /var/cron/tabs/ -p wa -k services"
     "-w /var/cron/cron.allow -p wa -k services"
     "-w /var/cron/cron.deny -p wa -k services"
+  ]
+  ++ [
 
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268098
     "-a always,exit -F arch=b32 -S open,creat,truncate,ftruncate,openat,open_by_handle_at -F exit=-EACCES -F auid>=1000 -F auid!=unset -F key=access"

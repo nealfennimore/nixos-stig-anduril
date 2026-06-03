@@ -3,6 +3,7 @@
 # to /etc/nixos/configuration.nix instead.
 {
   lib,
+  pkgs,
   ...
 }:
 
@@ -26,6 +27,7 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
+  boot.kernelPackages = pkgs.linuxPackages_6_12; # Working kernel. Later versions have issues with audit
 
   fileSystems."/" = {
     device = "/dev/disk/by-label/nixos";
