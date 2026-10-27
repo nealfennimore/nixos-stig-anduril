@@ -18,7 +18,12 @@ in
 {
 
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268082
-  services.getty.helpLine = lib.mkDefault text;
-  services.getty.greetingLine = lib.mkForce text; # NOTE: helpLine is in the grouping, but it looks like it should be greetingLine
+  # Plain assignment on purpose: helpLine is a `lines` option and nixpkgs adds the
+  # nixos-help hint at normal priority, so mkDefault here would drop the banner.
+  services.getty.helpLine = text;
+  # NOTE: the STIG names helpLine, but greetingLine is what agetty shows first.
+  # nixpkgs sets greetingLine with mkDefault, so a plain mkDefault here conflicts.
+  # Priority 900 wins over that default but still yields to a plain assignment.
+  services.getty.greetingLine = lib.mkOverride 900 text;
 
 }

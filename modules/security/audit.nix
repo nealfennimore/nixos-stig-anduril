@@ -5,8 +5,9 @@
   security.audit.enable = true;
 
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268093
-  # Sets both the audit_backlog_limit kernel parameter and "-b" in the loaded rules
-  security.audit.backlogLimit = 8192;
+  # Sets both the audit_backlog_limit kernel parameter and "-b" in the loaded rules.
+  # 8192 is the minimum, a larger value is allowed.
+  security.audit.backlogLimit = lib.mkDefault 8192;
 
   security.audit.rules = [
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268091
@@ -81,27 +82,30 @@
 
   ];
 
-  environment.etc."audit/auditd.conf".text = lib.strings.concatLines [
+  # Values that the STIG allows alternatives for are set with mkDefault:
+  # space_left_action and admin_space_left_action can be syslog, exec or email,
+  # disk_full_action and disk_error_action can be SYSLOG, SINGLE or HALT.
+  security.auditd.settings = {
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268101
-    "space_left_action = syslog"
+    space_left_action = lib.mkDefault "syslog";
 
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268102
-    "admin_space_left_action = syslog"
+    admin_space_left_action = lib.mkDefault "syslog";
 
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268103
-    "space_left = 25%"
+    space_left = lib.mkDefault "25%";
 
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268104
-    "admin_space_left = 10%"
+    admin_space_left = lib.mkDefault "10%";
 
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268105
-    "disk_full_action = HALT"
+    disk_full_action = lib.mkDefault "HALT";
 
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268106
-    "disk_error_action = HALT"
+    disk_error_action = lib.mkDefault "HALT";
 
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268110
-    "log_group = root"
-  ];
+    log_group = "root";
+  };
 
 }

@@ -12,7 +12,8 @@
     lib.mkBefore "password requisite ${pkgs.libpwquality.lib}/lib/security/pam_pwquality.so"
   );
 
-  environment.etc."/security/pwquality.conf".text = lib.strings.concatLines [
+  # The values below are the STIG minimums. Override the whole file to be stricter.
+  environment.etc."security/pwquality.conf".text = lib.mkDefault (lib.strings.concatLines [
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268126
     ''
       ucredit=-1
@@ -41,5 +42,5 @@
     ''
       dictcheck=1
     ''
-  ];
+  ]);
 }

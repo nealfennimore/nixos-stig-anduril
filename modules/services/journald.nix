@@ -4,7 +4,7 @@ let
 in
 {
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268107
-  services.journald.audit = true;
+  services.journald.audit = lib.mkDefault true;
 
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268108
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268109
