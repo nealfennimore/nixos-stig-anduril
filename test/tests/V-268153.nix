@@ -1,8 +1,11 @@
 ''
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268153
 
-  machine.succeed("grep -q aide /tmp/current-system")
+  machine.succeed("which aide")
 
-  machine.succeed("[[ -f /etc/aide/aide.conf ]]")
+  machine.succeed("[[ -f /etc/aide.conf ]]")
 
+  machine.wait_for_unit("aide.service")
+
+  machine.succeed("[[ $(systemctl is-active aide.service) == 'active' ]]")
 ''

@@ -4,6 +4,10 @@
   security.auditd.enable = true;
   security.audit.enable = true;
 
+  # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268093
+  # Sets both the audit_backlog_limit kernel parameter and "-b" in the loaded rules
+  security.audit.backlogLimit = 8192;
+
   security.audit.rules = [
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268091
     # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268148

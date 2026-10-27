@@ -1,7 +1,5 @@
 ''
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268147
 
-  # NOTE: hardware bluetooth disabled
-
-
+  machine.fail("systemctl is-enabled bluetooth.service")
 ''

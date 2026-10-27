@@ -39,3 +39,16 @@ See [test](./test) for complete example implementation.
 }
 
 ```
+
+### Required settings
+
+The modules enable journal upload for off-loading audit records (V-268108, V-268109). Set the remote destination and the CA file in your configuration:
+
+```nix
+services.journald.upload.settings.Upload = {
+  URL = "https://logs.example.com:19532";
+  TrustedCertificateFile = "/path/to/ca.pem";
+};
+```
+
+The modules also set `users.mutableUsers = false` (V-268138). Declare user passwords in the NixOS configuration.

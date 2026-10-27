@@ -1,9 +1,10 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 {
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268153
   environment.etc = {
+    # Creates /etc/aide.conf (nixpkgs builds aide with --sysconfdir=/etc)
     # From: https://src.fedoraproject.org/rpms/aide/blob/rawhide/f/aide.conf
-    "aide/aide.conf" = lib.mkDefault {
+    "aide.conf" = lib.mkDefault {
       text = ''
         # Example configuration file for AIDE.
 
@@ -232,5 +233,31 @@
       '';
       mode = "0444";
     };
+  };
+
+  # The STIG check runs `systemctl is-active aide.service`.
+  # Initialize the baseline database on first boot, then check against it.
+  # aide exits 1-7 when it finds changes; keep those as "success" so the unit
+  # stays active and the report remains visible in the journal and in /var/log/aide.
+  systemd.services.aide = {
+    description = "AIDE file integrity check";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "local-fs.target" ];
+    path = [ pkgs.aide ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      StateDirectory = "aide";
+      LogsDirectory = "aide";
+      SuccessExitStatus = "1 2 3 4 5 6 7";
+    };
+    script = ''
+      if [ ! -f /var/lib/aide/aide.db.gz ]; then
+        aide -c /etc/aide.conf --init
+        mv /var/lib/aide/aide.db.new.gz /var/lib/aide/aide.db.gz
+      else
+        aide -c /etc/aide.conf --check
+      fi
+    '';
   };
 }

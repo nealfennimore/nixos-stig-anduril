@@ -14,7 +14,7 @@
     ./security/audit.nix
     ./services/usbguard.nix
     ./services/sssd.nix
-    ./services/syslog-ng.nix
+    ./services/journald.nix
     ./services/ldap.nix
     ./services/displaymanager.nix
   ];

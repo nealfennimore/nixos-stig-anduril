@@ -1,9 +1,9 @@
 ''
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268138
 
-  # FIXME: Not able to get this to be L in test
-  # However, running the VM shows it as L
+  # "L" or "NP" from passwd -S means the shadow password field is locked (starts with ! or *) or empty.
 
-  machine.fail("[[ 'L' == $(passwd -S root | awk '{print $2}') ]]")
+  # Read the field directly so the test does not depend on the passwd binary being installed.
 
+  machine.succeed("[[ $(getent shadow root | cut -d: -f2) =~ ^(!|[*]|$) ]]")
 ''

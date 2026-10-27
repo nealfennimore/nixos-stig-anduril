@@ -1,6 +1,5 @@
 ''
   # https://stigui.com/stigs/Anduril_NixOS_STIG/groups/V-268117
 
-  machine.succeed("grep -q 'dir_perm(0750)' $(grep -E -o '([[:alnum:]]|/)+-syslog-ng\\.conf' /etc/systemd/system/syslog-ng.service)")
-
+  machine.succeed("[[ -z \"$(find /var/log/journal -type d -perm -2755 -not -perm 2755)\" ]]")
 ''

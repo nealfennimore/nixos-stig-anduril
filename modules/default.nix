@@ -11,7 +11,6 @@
     ./networking/timeservers.nix
     ./networking/wireless.nix
     ./nix/settings.nix
-    ./nix/overlays.nix
     ./programs/dconf.nix
     ./security/apparmor.nix
     ./security/audit.nix
@@ -21,10 +20,13 @@
     ./services/cron.nix
     ./services/displaymanager.nix
     ./services/getty.nix
+    ./services/journald.nix
+    ./services/logind.nix
     ./services/ssh.nix
     ./services/sssd.nix
-    ./services/syslog-ng.nix
     ./services/timesyncd.nix
     ./services/usbguard.nix
+    ./services/xautolock.nix
+    ./users.nix
   ];
 }
